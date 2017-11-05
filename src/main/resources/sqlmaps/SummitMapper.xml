@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.lucier.model">
+    <resultMap type="com.lucifer.model.hfc.SummitCategory" id="SummitCategoryMap">
+        <id column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="top" property="top"/>
+        <result column="is_deleted" property="isDeleted"/>
+    </resultMap>
+
+    <select id="summitCategoryList" resultMap="SummitCategoryMap">
+        select * from summit_category where  is_deleted = 0 order by top desc
+    </select>
+
+    <insert id="addSummitCategory" useGeneratedKeys="true" keyProperty="id">
+        insert into summit_category (name,top,is_deleted) values (#{name},#{top},0)
+    </insert>
+
+    <delete id="deleteSummitCategory">
+        update summit_category set is_deleted = 1 where id = #{id}
+    </delete>
+
+    <select id="getSummitCategory" resultMap="SummitCategoryMap">
+        select * from summit_category where  id = #{id}
+    </select>
+
+    <update id="updateSummitCategory">
+        update summit_category set name = #{name},top = #{top} where id = #{id}
+    </update>
+
+    <resultMap type="com.lucifer.model.hfc.Summit" id="SummitMap">
+        <id column="id" property="id"/>
+        <result column="title" property="title"/>
+        <result column="summary" property="summary"/>
+        <result column="logo" property="logo"/>
+        <result column="source" property="source"/>
+        <result column="category_id" property="categoryId"/>
+        <result column="mode" property="mode"/>
+        <result column="content" property="content"/>
+        <result column="publish_at" property="publishAt"/>
+        <result column="top" property="top"/>
+        <result column="is_deleted" property="isDeleted"/>
+        <result column="created_at" property="createdAt"/>
+        <result column="updated_at" property="updatedAt"/>
+        <result column="category_name" property="categoryName"/>
+    </resultMap>
+
+    <select id="summitList" resultMap="SummitMap">
+        select summit.*,summit_category.name category_name from summit
+        left outer join summit_category on summit.category_id = summit_category.id
+        where  summit.is_deleted = 0
+        <if test="title!=null and title!=''">
+            and summit.title like '%${title}%'
+        </if>
+        order by summit.top desc,summit.publish_at desc limit #{offset},#{count}
+    </select>
+
+    <select id="cmsSummitMatchRecordCount" resultType="java.lang.Integer">
+        select count(*) from summit where is_deleted = 0
+        <if test="title!=null and title!=''">
+            and summit.title like '%${title}%'
+        </if>
+    </select>
+
+    <insert id="insertSummit" useGeneratedKeys="true" keyProperty="id">
+        insert into summit
+        (title,logo,summary,category_id,content,publish_at,top,created_at,updated_at)
+        values
+        (#{title},#{logo},#{summary},#{categoryId},#{content},#{publishAt},#{top},#{createdAt},#{updatedAt})
+    </insert>
+
+    <update id="updateSummit">
+        update summit
+        set
+        title = #{title},  logo= #{logo}, summary=#{summary},
+        category_id = #{categoryId} ,content = #{content},publish_at = #{publishAt} ,top = #{top}
+        where id = #{id}
+    </update>
+
+    <delete id="deleteSummit">
+        update summit
+        set is_deleted = 1
+        where id = #{id}
+    </delete>
+
+    <select id="getSummit" resultMap="SummitMap">
+        select summit.*,summit_category.name category_name from summit
+        left outer join summit_category on summit.category_id = summit_category.id
+        where  summit.id = #{id}
+    </select>
+
+</mapper>

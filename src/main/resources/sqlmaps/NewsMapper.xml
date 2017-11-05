@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.lucier.model">
+	<resultMap type="com.lucifer.model.hfc.News" id="newsMap">
+		<id column="id" property="id"/>
+		<result column="title" property="title"/>
+		<result column="summary" property="summary"/>
+		<result column="logo" property="logo"/>
+		<result column="source" property="source"/>
+		<result column="category_id" property="categoryId"/>
+		<result column="mode" property="mode"/>
+		<result column="content" property="content"/>
+		<result column="click_count" property="clickCount"/>
+		<result column="publish_at" property="publishAt"/>
+		<result column="top" property="top"/>
+		<result column="is_deleted" property="isDeleted"/>
+		<result column="created_at" property="createdAt"/>
+		<result column="updated_at" property="updatedAt"/>
+		<result column="category_name" property="categoryName"/>
+	</resultMap>
+
+	<select id="cmsNewsList" resultMap="newsMap">
+		select news.*,news_category.name category_name from news
+		left outer join news_category on news.category_id = news_category.id
+		where  news.is_deleted = 0
+		<if test="title!=null and title!=''">
+			and news.title like '%${title}%'
+		</if>
+		order by news.top desc,news.publish_at desc limit #{offset},#{count}
+	</select>
+	
+	<select id="cmsNewsMatchRecordCount" resultType="java.lang.Integer">
+		select count(*) from news where is_deleted = 0
+		<if test="title!=null and title!=''">
+			and news.title like '%${title}%'
+		</if>
+	</select>
+
+	<insert id="insertNews" useGeneratedKeys="true" keyProperty="id">
+		insert into news
+		(title,logo,summary,source,category_id,mode,content,publish_at,top,click_count,created_at,updated_at)
+		values
+		(#{title},#{logo},#{summary},#{source},#{categoryId},#{mode},#{content},#{publishAt},#{top},#{clickCount},#{createdAt},#{updatedAt})
+	</insert>
+	
+	<update id="updateNews">
+		update news
+		set
+		title = #{title},  logo= #{logo}, summary=#{summary}, source=#{source},
+		category_id = #{categoryId} ,mode = #{mode} ,content = #{content},publish_at = #{publishAt} ,top = #{top},
+		updated_at = now()
+		where id = #{id}
+	</update>
+	
+	<delete id="deleteNews">
+		update news
+		set is_deleted = 1
+		where id = #{id}
+	</delete>
+
+	<select id="getNews" resultMap="newsMap">
+		select news.*,news_category.name category_name from news
+		left outer join news_category on news.category_id = news_category.id
+		where  news.id = #{id}
+	</select>
+	
+	<select id="webHotNewsList" resultMap="newsMap">
+		select news.*,news_category.name category_name from news
+		left outer join news_category on news.category_id = news_category.id
+		where news.is_deleted = 0
+		order by news.click_count desc limit 6
+	</select>
+	<select id="webNewsList"  resultMap="newsMap">
+		select news.*,news_category.name category_name from news
+		left outer join news_category on news.category_id = news_category.id
+		where  news.is_deleted = 0
+		<if test="categoryId!=null and categoryId!=''">
+			and news.category_id = #{categoryId}
+		</if>
+		order by news.top desc,news.publish_at desc limit #{offset},#{count}
+	</select>
+
+
+	<select id="newsListOrderByUpdatedAt" resultMap="newsMap">
+		select *
+		from news
+		<if test="updatedAt != null">
+			<![CDATA[
+			where updated_at > #{updatedAt}
+			]]>
+		</if>
+		order by updated_at limit #{count}
+	</select>
+
+
+
+	<resultMap type="com.lucifer.model.hfc.NewsCategory" id="newsCategoryMap">
+		<id column="id" property="id"/>
+		<result column="name" property="name"/>
+		<result column="top" property="top"/>
+		<result column="is_deleted" property="isDeleted"/>
+	</resultMap>
+	
+	<select id="cmsNewsCategoryList" resultMap="newsCategoryMap">
+		select * from news_category where  is_deleted = 0 order by top desc
+	</select>
+
+	<insert id="addNewsCategory" useGeneratedKeys="true" keyProperty="id">
+		insert into news_category (name,top,is_deleted) values (#{name},#{top},0)
+	</insert>
+	
+	<delete id="deleteNewsCategory">
+		update news_category set is_deleted = 1 where id = #{id}
+	</delete>
+
+	<select id="getNewsCategory" resultMap="newsCategoryMap">
+		select * from news_category where  id = #{id}
+	</select>
+
+	<update id="newsCategoryUpdate">
+		update news_category set name = #{name},top = #{top} where id = #{id}
+	</update>
+
+	<resultMap type="com.lucifer.model.hfc.NewsRecommend" id="NewsRecommendMap">
+		<id column="id" property="id"/>
+		<result column="news_id" property="newsId"/>
+		<result column="top" property="top"/>
+		<result column="is_deleted" property="isDeleted"/>
+		<result column="created_at" property="createdAt"/>
+		<result column="updated_at" property="updatedAt"/>
+	</resultMap>
+
+	<select id="newsRecommendList" resultMap="NewsRecommendMap">
+		select * from news_recommend order by top desc ,id desc
+	</select>
+
+	<insert id="addNewsRecommend" useGeneratedKeys="true" keyProperty="id">
+		insert into news_recommend (news_id,top,created_at,updated_at) values (#{newsId},#{top},now(),now())
+	</insert>
+
+	<delete id="deleteNewsRecommend">
+		delete from news_recommend where id = #{id}
+	</delete>
+
+	<select id="getNewsRecommend" resultMap="NewsRecommendMap">
+		select * from news_recommend where  id = #{id}
+	</select>
+
+	<update id="updateNewsRecommend">
+		update news_recommend set top = #{top},updated_at = now() where id = #{id}
+	</update>
+
+
+
+
+
+</mapper>

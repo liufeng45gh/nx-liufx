@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.lucier.model">
+    <resultMap type="com.lucifer.model.hfc.ThreeBlock" id="ThreeBlockMap">
+        <id column="id" property="id"/>
+        <result column="title" property="title"/>
+        <result column="summary" property="summary"/>
+        <result column="logo" property="logo"/>
+        <result column="top" property="top"/>
+        <result column="link" property="link"/>
+    </resultMap>
+    
+    <select id="threeBlockList" resultMap="ThreeBlockMap">
+        select * from three_block order by top desc,id desc
+    </select>
+
+    <insert id="insertThreeBlock">
+        insert into three_block (title,summary,logo,top,link) values (#{title},#{summary},#{logo},#{top},#{link})
+    </insert>
+
+    <delete id="deleteThreeBlock">
+        delete from three_block where id = #{id}
+    </delete>
+
+    <select id="getThreeBlock" resultMap="ThreeBlockMap">
+        select * from three_block where id = #{id}
+    </select>
+
+    <update id="updateThreeBlock">
+        update three_block set title = #{title},summary = #{summary}, logo = #{logo}, top = #{top}, link = #{link}
+        where id = #{id}
+    </update>
+
+
+
+
+</mapper>

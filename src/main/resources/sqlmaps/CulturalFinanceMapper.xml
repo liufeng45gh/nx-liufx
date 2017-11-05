@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.lucier.model">
+    <resultMap type="com.lucifer.model.hfc.CulturalFinanceCategory" id="CulturalFinanceCategoryMap">
+        <id column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="top" property="top"/>
+        <result column="is_deleted" property="isDeleted"/>
+    </resultMap>
+
+    <select id="culturalFinanceCategoryList" resultMap="CulturalFinanceCategoryMap">
+        select * from cultural_finance_category where  is_deleted = 0 order by top desc
+    </select>
+
+    <insert id="addCulturalFinanceCategory" useGeneratedKeys="true" keyProperty="id">
+        insert into cultural_finance_category (name,top,is_deleted) values (#{name},#{top},0)
+    </insert>
+
+    <delete id="deleteCulturalFinanceCategory">
+        update cultural_finance_category set is_deleted = 1 where id = #{id}
+    </delete>
+
+    <select id="getCulturalFinanceCategory" resultMap="CulturalFinanceCategoryMap">
+        select * from cultural_finance_category where  id = #{id}
+    </select>
+
+    <update id="updateCulturalFinanceCategory">
+        update cultural_finance_category set name = #{name},top = #{top} where id = #{id}
+    </update>
+
+    <resultMap type="com.lucifer.model.hfc.CulturalFinance" id="CulturalFinanceMap">
+        <id column="id" property="id"/>
+        <result column="title" property="title"/>
+        <result column="summary" property="summary"/>
+        <result column="logo" property="logo"/>
+        <result column="source" property="source"/>
+        <result column="category_id" property="categoryId"/>
+        <result column="mode" property="mode"/>
+        <result column="content" property="content"/>
+        <result column="publish_at" property="publishAt"/>
+        <result column="top" property="top"/>
+        <result column="is_deleted" property="isDeleted"/>
+        <result column="created_at" property="createdAt"/>
+        <result column="updated_at" property="updatedAt"/>
+        <result column="category_name" property="categoryName"/>
+    </resultMap>
+
+    <select id="culturalFinanceList" resultMap="CulturalFinanceMap">
+        select cultural_finance.*,cultural_finance_category.name category_name from cultural_finance
+        left outer join cultural_finance_category on cultural_finance.category_id = cultural_finance_category.id
+        where  cultural_finance.is_deleted = 0
+        <if test="title!=null and title!=''">
+            and cultural_finance.title like '%${title}%'
+        </if>
+        <if test="categoryId!=null">
+            and cultural_finance.category_id = #{categoryId}
+        </if>
+        order by cultural_finance.top desc,cultural_finance.publish_at desc limit #{offset},#{count}
+    </select>
+
+    <select id="cmsCulturalFinanceMatchRecordCount" resultType="java.lang.Integer">
+        select count(*) from cultural_finance where is_deleted = 0
+        <if test="title!=null and title!=''">
+            and cultural_finance.title like '%${title}%'
+        </if>
+    </select>
+
+    <insert id="insertCulturalFinance" useGeneratedKeys="true" keyProperty="id">
+        insert into cultural_finance
+        (title,logo,summary,category_id,content,publish_at,top,created_at,updated_at)
+        values
+        (#{title},#{logo},#{summary},#{categoryId},#{content},#{publishAt},#{top},#{createdAt},#{updatedAt})
+    </insert>
+
+    <update id="updateCulturalFinance">
+        update cultural_finance
+        set
+        title = #{title},  logo= #{logo}, summary=#{summary},
+        category_id = #{categoryId}  ,content = #{content},publish_at = #{publishAt} ,top = #{top}
+        where id = #{id}
+    </update>
+
+    <delete id="deleteCulturalFinance">
+        update cultural_finance
+        set is_deleted = 1
+        where id = #{id}
+    </delete>
+
+    <select id="getCulturalFinance" resultMap="CulturalFinanceMap">
+        select cultural_finance.*,cultural_finance_category.name category_name from cultural_finance
+        left outer join cultural_finance_category on cultural_finance.category_id = cultural_finance_category.id
+        where  cultural_finance.id = #{id}
+    </select>
+
+
+
+</mapper>

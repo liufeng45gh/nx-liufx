@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.lucier.model">
+    <resultMap type="com.lucifer.model.hfc.ArtistInterview" id="ArtistInterviewMap">
+        <id column="id" property="id"/>
+        <result column="title" property="title"/>
+        <result column="summary" property="summary"/>
+        <result column="logo" property="logo"/>
+        <result column="reporter" property="reporter"/>
+
+        <result column="content" property="content"/>
+        <result column="click_count" property="clickCount"/>
+        <result column="publish_at" property="publishAt"/>
+        <result column="top" property="top"/>
+        <result column="is_deleted" property="isDeleted"/>
+        <result column="created_at" property="createdAt"/>
+        <result column="updated_at" property="updatedAt"/>
+    </resultMap>
+
+    <select id="interviewList" resultMap="ArtistInterviewMap">
+        select * from  hf_artist_interview where is_deleted = 0
+        <if test="title!=null and title!=''">
+            and title like '%${title}%'
+        </if>
+        order by top desc,id desc limit #{offset},#{count}
+    </select>
+
+    <select id="cmsArtistInterviewMatchRecordCount" resultType="java.lang.Integer">
+        select count(*) from hf_artist_interview where is_deleted = 0
+        <if test="title!=null and title!=''">
+            and hf_artist.title like '%${title}%'
+        </if>
+    </select>
+
+    <insert id="insertArtistInterview">
+        insert into hf_artist_interview (title,logo,summary,reporter,content,publish_at,top,created_at,updated_at)
+        values
+        (#{title},#{logo},#{summary},#{reporter},#{content},#{publishAt},#{top},#{createdAt},#{updatedAt})
+    </insert>
+
+    <select id="getArtistInterview" resultMap="ArtistInterviewMap">
+        select * from  hf_artist_interview where id = #{id}
+    </select>
+
+    <update id="updateArtistInterview">
+        update hf_artist_interview
+        set title = #{title},top = #{top},logo = #{logo},summary = #{summary},content = #{content},publish_at = #{publishAt},updated_at=#{updatedAt}
+        where id = #{id}
+    </update>
+
+    <delete id="deleteArtistInterview">
+        update hf_artist_interview
+        set is_deleted = 1
+        where id = #{id}
+    </delete>
+
+
+
+</mapper>

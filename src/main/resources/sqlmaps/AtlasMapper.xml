@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.lucier.model">
+    <resultMap type="com.lucifer.model.hfc.Atlas" id="AtlasMap">
+        <id column="id" property="id"/>
+        <result column="title" property="title"/>
+        <result column="logo" property="logo"/>
+
+        <result column="top" property="top"/>
+
+        <result column="is_deleted" property="isDeleted"/>
+        <result column="created_at" property="createdAt"/>
+        <result column="updated_at" property="updatedAt"/>
+    </resultMap>
+
+    <select id="atlasList" resultMap="AtlasMap">
+        select * from  atlas where is_deleted = 0
+
+        order by top desc,id desc limit #{offset},#{count}
+    </select>
+
+    <select id="cmsAtlasMatchRecordCount" resultType="java.lang.Integer">
+        select count(*) from atlas where is_deleted = 0
+
+    </select>
+
+    <insert id="insertAtlas">
+        insert into atlas (title,logo,top,created_at,updated_at,is_deleted) values (#{title},#{logo},#{top},#{createdAt},#{updatedAt},0)
+    </insert>
+
+    <select id="getAtlas" resultMap="AtlasMap">
+        select * from  atlas where id = #{id}
+    </select>
+
+    <update id="updateAtlas">
+        update atlas
+        set title = #{title},top = #{top},logo = #{logo},updated_at=#{updatedAt}
+        where id = #{id}
+    </update>
+
+    <delete id="deleteAtlas">
+        update atlas
+        set is_deleted = 1
+        where id = #{id}
+    </delete>
+
+    <insert id="insertAtlasRecommend">
+        insert into atlas_recommend (atlas_id,created_at,updated_at,top) values (#{atlasId},#{createdAt},#{updatedAt},#{top})
+    </insert>
+
+    <select id="atlasListOrderByUpdatedAt" resultMap="AtlasMap">
+        select *
+        from atlas
+        <if test="updatedAt != null">
+            <![CDATA[
+			where updated_at > #{updatedAt}
+			]]>
+        </if>
+        order by updated_at limit #{count}
+    </select>
+
+    <resultMap type="com.lucifer.model.hfc.AtlasRecommend" id="AtlasRecommendMap">
+        <id column="id" property="id"/>
+        <result column="atlas_id" property="atlasId"/>
+        <result column="top" property="top"/>
+        <result column="created_at" property="createdAt"/>
+        <result column="updated_at" property="updatedAt"/>
+    </resultMap>
+
+    <select id="atlasRecommendList" resultMap="AtlasRecommendMap">
+        select * from atlas_recommend order by top desc,id desc
+    </select>
+    <update id="updateAtlasRecommend">
+        update atlas_recommend set top = #{top} where id = #{id}
+    </update>
+
+    <delete id="deleteAtlasRecommend">
+        delete from atlas_recommend where id = #{id}
+    </delete>
+
+</mapper>

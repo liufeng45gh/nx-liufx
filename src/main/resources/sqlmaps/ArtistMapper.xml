@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.lucier.model">
+    <resultMap type="com.lucifer.model.hfc.Artist" id="artistMap">
+        <id column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="avatar" property="avatar"/>
+        <result column="intro" property="intro"/>
+        <result column="detail" property="detail"/>
+        <result column="top" property="top"/>
+        <result column="tag" property="tag"/>
+        <result column="is_deleted" property="isDeleted"/>
+        <result column="created_at" property="createdAt"/>
+        <result column="updated_at" property="updatedAt"/>
+    </resultMap>
+
+    <select id="artistList" resultMap="artistMap">
+        select * from  hf_artist where is_deleted = 0
+        <if test="name!=null and name!=''">
+            and name like '%${name}%'
+        </if>
+        order by name_py limit #{offset},#{count}
+    </select>
+
+    <select id="cmsArtistMatchRecordCount" resultType="java.lang.Integer">
+        select count(*) from hf_artist where is_deleted = 0
+        <if test="name!=null and name!=''">
+            and hf_artist.name like '%${name}%'
+        </if>
+    </select>
+
+    <insert id="insertArtist">
+        insert into hf_artist (name,avatar,top,intro,detail,created_at,updated_at,is_deleted,name_py) values (#{name},#{avatar},#{top},#{intro},#{detail},#{createdAt},#{updatedAt},0,#{namePy})
+    </insert>
+
+    <select id="getArtist" resultMap="artistMap">
+        select * from  hf_artist where id = #{id}
+    </select>
+
+    <update id="updateArtist">
+        update hf_artist
+        set name = #{name},top = #{top},avatar = #{avatar},intro = #{intro},detail = #{detail},updated_at=#{updatedAt},name_py = #{namePy}
+        where id = #{id}
+    </update>
+
+    <delete id="deleteArtist">
+        update hf_artist
+        set is_deleted = 1
+        where id = #{id}
+    </delete>
+
+    <insert id="insertArtistRecommend">
+        insert into hf_artist_recommend (artist_id,created_at,updated_at,top) values (#{artistId},#{createdAt},#{updatedAt},#{top})
+    </insert>
+
+    <select id="artistListOrderByUpdatedAt" resultMap="artistMap">
+        select *
+        from hf_artist
+        <if test="updatedAt != null">
+            <![CDATA[
+			where updated_at > #{updatedAt}
+			]]>
+        </if>
+        order by updated_at limit #{count}
+    </select>
+
+    <resultMap type="com.lucifer.model.hfc.ArtistRecommend" id="ArtistRecommendMap">
+        <id column="id" property="id"/>
+        <result column="artist_id" property="artistId"/>
+        <result column="top" property="top"/>
+        <result column="created_at" property="createdAt"/>
+        <result column="updated_at" property="updatedAt"/>
+    </resultMap>
+
+    <select id="artistRecommendList" resultMap="ArtistRecommendMap">
+        select * from hf_artist_recommend order by top desc,id desc
+    </select>
+    <update id="updateArtistRecommend">
+        update hf_artist_recommend set top = #{top} where id = #{id}
+    </update>
+
+    <delete id="deleteArtistRecommend">
+        delete from hf_artist_recommend where id = #{id}
+    </delete>
+
+</mapper>

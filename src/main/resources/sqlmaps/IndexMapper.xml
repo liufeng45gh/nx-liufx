@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.lucier.model">
+    <resultMap type="com.lucifer.model.hfc.IndexRecommend" id="IndexRecommendMap">
+        <id column="id" property="id"/>
+        <result column="news_id" property="newsId"/>
+        <result column="top" property="top"/>
+        <result column="is_deleted" property="isDeleted"/>
+        <result column="created_at" property="createdAt"/>
+        <result column="updated_at" property="updatedAt"/>
+    </resultMap>
+<!-- 下面是新闻-->
+    <select id="newsIndexRecommendList" resultMap="IndexRecommendMap">
+        select * from index_news order by top desc ,id desc
+    </select>
+    
+    <select id="newsIndexRecommendListLimit6"  resultMap="IndexRecommendMap">
+        select * from index_news order by top desc ,id desc limit 6
+    </select>
+
+    <insert id="addNewsIndexRecommend" useGeneratedKeys="true" keyProperty="id">
+        insert into index_news (target_id,top,created_at,updated_at) values (#{targetId},#{top},now(),now())
+    </insert>
+
+    <delete id="deleteNewsIndexRecommend">
+        delete from index_news where id = #{id}
+    </delete>
+
+    <select id="getNewsIndexRecommend" resultMap="IndexRecommendMap">
+        select * from index_news where  id = #{id}
+    </select>
+
+    <update id="updateNewsIndexRecommend">
+        update index_news set top = #{top},updated_at = now() where id = #{id}
+    </update>
+
+<!--  下面是艺术家 -->
+    <select id="artistIndexRecommendList" resultMap="IndexRecommendMap">
+        select * from index_artist order by top desc ,id desc
+    </select>
+    
+    <select id="artistIndexRecommendListLimit16" resultMap="IndexRecommendMap">
+        select * from index_artist order by top desc ,id desc limit 16
+    </select>
+
+    <insert id="addArtistIndexRecommend" useGeneratedKeys="true" keyProperty="id">
+        insert into index_artist (target_id,top,created_at,updated_at) values (#{targetId},#{top},now(),now())
+    </insert>
+
+    <delete id="deleteArtistIndexRecommend">
+        delete from index_artist where id = #{id}
+    </delete>
+
+    <select id="getArtistIndexRecommend" resultMap="IndexRecommendMap">
+        select * from index_artist where  id = #{id}
+    </select>
+
+    <update id="updateArtistIndexRecommend">
+        update index_artist set top = #{top},updated_at = now() where id = #{id}
+    </update>
+
+<!-- 下面是文化金融-->
+
+    <select id="financeIndexRecommendList" resultMap="IndexRecommendMap">
+        select * from index_cultural_finance order by top desc ,id desc
+    </select>
+
+    <select id="financeIndexRecommendListLimit3" resultMap="IndexRecommendMap">
+        select * from index_cultural_finance order by top desc ,id desc limit 3
+    </select>
+
+
+
+    <insert id="addFinanceIndexRecommend" useGeneratedKeys="true" keyProperty="id">
+        insert into index_cultural_finance (target_id,top,created_at,updated_at) values (#{targetId},#{top},now(),now())
+    </insert>
+
+    <delete id="deleteFinanceIndexRecommend">
+        delete from index_cultural_finance where id = #{id}
+    </delete>
+
+    <select id="getFinanceIndexRecommend" resultMap="IndexRecommendMap">
+        select * from index_cultural_finance where  id = #{id}
+    </select>
+
+    <update id="updateFinanceIndexRecommend">
+        update index_cultural_finance set top = #{top},updated_at = now() where id = #{id}
+    </update>
+<!-- 下面是研究报告-->
+
+    <select id="researchIndexRecommendList" resultMap="IndexRecommendMap">
+        select * from index_research order by top desc ,id desc
+    </select>
+
+    <select id="researchIndexRecommendListLimit3" resultMap="IndexRecommendMap">
+        select * from index_research order by top desc ,id desc limit 3
+    </select>
+
+
+
+    <insert id="addResearchIndexRecommend" useGeneratedKeys="true" keyProperty="id">
+        insert into index_research (target_id,top,created_at,updated_at) values (#{targetId},#{top},now(),now())
+    </insert>
+
+    <delete id="deleteResearchIndexRecommend">
+        delete from index_research where id = #{id}
+    </delete>
+
+    <select id="getResearchIndexRecommend" resultMap="IndexRecommendMap">
+        select * from index_research where  id = #{id}
+    </select>
+
+    <update id="updateResearchIndexRecommend">
+        update index_research set top = #{top},updated_at = now() where id = #{id}
+    </update>
+
+    <!-- 下面是峰会-->
+    <select id="summitIndexRecommendList" resultMap="IndexRecommendMap">
+        select * from index_summit order by top desc ,id desc
+    </select>
+
+    <insert id="addSummitIndexRecommend" useGeneratedKeys="true" keyProperty="id">
+        insert into index_summit (target_id,top,created_at,updated_at) values (#{targetId},#{top},now(),now())
+    </insert>
+
+    <delete id="deleteSummitIndexRecommend">
+        delete from index_summit where id = #{id}
+    </delete>
+
+    <select id="getSummitIndexRecommend" resultMap="IndexRecommendMap">
+        select * from index_summit where  id = #{id}
+    </select>
+
+    <update id="updateSummitIndexRecommend">
+        update index_summit set top = #{top},updated_at = now() where id = #{id}
+    </update>
+
+    <!--下面是会员活动-->
+    <select id="memberActivityIndexRecommendList" resultMap="IndexRecommendMap">
+        select * from index_member_activity order by top desc ,id desc
+    </select>
+
+    <select id="memberActivityIndexRecommendListLimit4" resultMap="IndexRecommendMap">
+        select * from index_member_activity order by top desc ,id desc limit 4
+    </select>
+
+    <insert id="addMemberActivityIndexRecommend" useGeneratedKeys="true" keyProperty="id">
+        insert into index_member_activity (target_id,top,created_at,updated_at) values (#{targetId},#{top},now(),now())
+    </insert>
+
+    <delete id="deleteMemberActivityIndexRecommend">
+        delete from index_member_activity where id = #{id}
+    </delete>
+
+    <select id="getMemberActivityIndexRecommend" resultMap="IndexRecommendMap">
+        select * from index_member_activity where  id = #{id}
+    </select>
+
+    <update id="updateMemberActivityIndexRecommend">
+        update index_member_activity set top = #{top},updated_at = now() where id = #{id}
+    </update>
+
+    <!--  下面是海富映像 -->
+    <select id="atlasIndexRecommendList" resultMap="IndexRecommendMap">
+        select * from index_atlas order by top desc ,id desc
+    </select>
+
+    <select id="atlasIndexRecommendListLimit12" resultMap="IndexRecommendMap">
+        select * from index_atlas order by top desc ,id desc limit 12
+    </select>
+
+    <insert id="addAtlasIndexRecommend" useGeneratedKeys="true" keyProperty="id">
+        insert into index_atlas (target_id,top,created_at,updated_at) values (#{targetId},#{top},now(),now())
+    </insert>
+
+    <delete id="deleteAtlasIndexRecommend">
+        delete from index_atlas where id = #{id}
+    </delete>
+
+    <select id="getAtlasIndexRecommend" resultMap="IndexRecommendMap">
+        select * from index_atlas where  id = #{id}
+    </select>
+
+    <update id="updateAtlasIndexRecommend">
+        update index_atlas set top = #{top},updated_at = now() where id = #{id}
+    </update>
+
+
+</mapper>
