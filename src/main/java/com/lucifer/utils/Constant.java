@@ -48,21 +48,26 @@ public class Constant {
 	public static final String defaultAvatar = "/web/images/default-avatar.jpg";
 
 
-	public static final String CACHE_KEY_PRAISE_APPRECIATE_PRE = "HFC:PERSISTENCE:PRAISE:APPRECIATE:";
+	public static final String CACHE_KEY_PRAISE_APPRECIATE_PRE = "NX:PERSISTENCE:PRAISE:APPRECIATE:";
 
-	public static final String CACHE_KEY_PERSISTENCE_TOKEN_PRE = "HFC:PERSISTENCE:TOKEN:";
+	public static final String CACHE_KEY_PERSISTENCE_TOKEN_PRE = "NX:PERSISTENCE:TOKEN:";
 
-	public static final String CACHE_KEY_PERSISTENCE_READ_APPRECIATE = "HFC:PERSISTENCE:READ:APPRECIATE:";
+	public static final String CACHE_KEY_PERSISTENCE_READ_APPRECIATE = "NX:PERSISTENCE:READ:APPRECIATE:";
 
-	public static final String CACHE_KEY_PERSISTENCE_MESSAGE_NEW_COUNT = "HFC:PERSISTENCE:MESSAGE:NEW:COUNT:";
+	public static final String CACHE_KEY_PERSISTENCE_MESSAGE_NEW_COUNT = "NX:PERSISTENCE:MESSAGE:NEW:COUNT:";
 
-	public static final String CACHE_KEY_GET_APPRECIATE = "HFC:CACHE:GET:APPRECIATE:";
+	public static final String CACHE_KEY_PERSISTENCE_PHONE_IMG = "NX:PERSISTENCE:PHONE:IMG:";
 
-	public static final String CACHE_KEY_GET_MEMBET_BY_ID = "HFC:CACHE:MEMBER:getMemberById:";
+	public static final  String CACHE_KEY_PERSISTENCE_PHONE_CODE="NX:PERSISTENCE:PHONE:CODE:";
 
-	public static final String CACHE_KEY_INDEX_HTML = "HFC:CACHE:INDEX:HTML:";
+	public static final String CACHE_KEY_GET_APPRECIATE = "NX:CACHE:GET:APPRECIATE:";
 
-	public static final String CACHE_KEY_REMOVE_ALL = "HFC:CACHE:*";
+	public static final String CACHE_KEY_GET_MEMBET_BY_ID = "NX:CACHE:MEMBER:getMemberById:";
+
+	public static final String CACHE_KEY_INDEX_HTML = "NX:CACHE:INDEX:HTML:";
+
+
+	public static final String CACHE_KEY_REMOVE_ALL = "NX:CACHE:*";
 
 	public static final Integer LOGIN_TIME_OUT= 3600 * 24 *10;
 

@@ -6,6 +6,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by liufx on 16/1/5.
@@ -21,6 +22,9 @@ public class AppCache {
         if (null != object) {
             return (T) object;
         }
+        if(null == provider) {
+            return null;
+        }
         object = provider.getData();
         if (object == null) {
            return null;
@@ -31,6 +35,11 @@ public class AppCache {
     
     public void set(String key,Object object){
     	redisTemplate.opsForValue().set(key,object);
+    }
+
+    public void set(String key,Object object,Integer timeout){
+        redisTemplate.opsForValue().set(key,object);
+        redisTemplate.expire(key, timeout, TimeUnit.SECONDS);
     }
 
     public void remove(String key){

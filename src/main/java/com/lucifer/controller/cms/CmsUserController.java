@@ -1,6 +1,5 @@
 package com.lucifer.controller.cms;
 
-import com.lucifer.controller.ApiAccountController;
 import com.lucifer.dao.UserDao;
 import com.lucifer.exception.ParamException;
 import com.lucifer.model.SearchParam;
@@ -19,9 +18,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by Administrator on 2016/6/30.

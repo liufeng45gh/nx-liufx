@@ -1,13 +1,17 @@
-package com.lucifer.controller;
+package com.lucifer.controller.api;
 
 
+import com.lucifer.cache.AppCache;
 import com.lucifer.model.User;
 import com.lucifer.service.AccountService;
 import com.lucifer.service.SmsService;
+import com.lucifer.utils.Constant;
 import com.lucifer.utils.Result;
+import com.lucifer.utils.StringHelper;
 import com.wordnik.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,6 +24,7 @@ import javax.servlet.http.HttpServletRequest;
  *
  */
 @Controller
+@RequestMapping("/api/account")
 public class ApiAccountController {
 	
 	@Resource
@@ -27,8 +32,10 @@ public class ApiAccountController {
 	
 	@Resource
 	private SmsService smsService;
+
+
 	
-	final Logger logger = LoggerFactory.getLogger(ApiAccountController.class);
+	final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	/**
 	 * 发送验证码
@@ -36,13 +43,14 @@ public class ApiAccountController {
 	 * @return {ok:true}
 	 * @throws Exception
 	 */
-	@ApiOperation(value = "发送验证码")
-	@RequestMapping(value="/v1/phone-sms",method=RequestMethod.POST)
+	@ApiOperation(value = "发送短信验证码")
+	@RequestMapping(value="/phone-sms",method=RequestMethod.POST)
 	@ResponseBody
-	public Result sendCheckMessage(@RequestBody User user, HttpServletRequest request) throws Exception{
+	public Result sendCheckMessage(@RequestBody String phone, @RequestBody String imgCode,HttpServletRequest request) throws Exception{
 		logger.info("sendCheckMessage has been called");
-		logger.info("phone is : "+user.getPhone());
-		Result result = smsService.sendCheckCode(user.getPhone(),this.getIpAddr(request));
+		logger.info("phone is : "+phone);
+
+		Result result = smsService.sendCheckCode(phone,imgCode,this.getIpAddr(request));
 		return result;
 	}
 	
@@ -54,10 +62,10 @@ public class ApiAccountController {
 	 * @throws Exception
 	 */
 	@ApiOperation(value = "比较验证码")
-	@RequestMapping(value="/v1/phone-checks",method=RequestMethod.POST)
+	@RequestMapping(value="/phone-checks",method=RequestMethod.POST)
 	@ResponseBody
-	public Result checkCode(@RequestBody  User user) throws Exception{		
-		return smsService.checkCode(user.getPhone(), user.getCode());
+	public Result checkCode(@RequestBody String phone,@RequestBody String telCode) throws Exception{
+		return smsService.checkCode(phone, telCode);
 	}
 	
 	
@@ -82,7 +90,7 @@ public class ApiAccountController {
 	 * @throws Exception
 	 */
 	@ApiOperation(value = "重置密码")
-	@RequestMapping(value="/v1/reset-pass",method=RequestMethod.POST)
+	@RequestMapping(value="/reset-pass",method=RequestMethod.POST)
 	@ResponseBody
 	public Result resetPassword(@RequestBody User user) throws Exception{		
 		Result result = accountService.resetPassword(user);		
@@ -98,7 +106,7 @@ public class ApiAccountController {
 	 * @throws Exception
 	 */
 	@ApiOperation(value = "绑定手机")
-	@RequestMapping(value="/v1/bind-phone/{user_id}",method=RequestMethod.POST)
+	@RequestMapping(value="/bind-phone/{user_id}",method=RequestMethod.POST)
 	@ResponseBody
 	public Result bindPhone(@RequestBody User user,@PathVariable("user_id") Long userId,@CookieValue String token) throws Exception{
 		user.setId(userId);
@@ -106,7 +114,7 @@ public class ApiAccountController {
 	}
 	
 	@ApiOperation(value = "绑定手机")
-	@RequestMapping(value="/v1/bind-phone",method=RequestMethod.POST)
+	@RequestMapping(value="/bind-phone",method=RequestMethod.POST)
 	@ResponseBody
 	public Result bindPhone(@RequestBody User user,@CookieValue String token) throws Exception{
 		//user.setUserId(userId);
@@ -121,7 +129,7 @@ public class ApiAccountController {
 	 * @throws Exception
 	 */
 	@ApiOperation(value = "比较密码")
-	@RequestMapping(value="/v1/check-password",method=RequestMethod.POST)
+	@RequestMapping(value="/check-password",method=RequestMethod.POST)
 	@ResponseBody
 	public Result checkPassword(@RequestBody User user,@CookieValue String token){
 		return accountService.checkPassword(user);
@@ -136,7 +144,7 @@ public class ApiAccountController {
 	 * @throws Exception
 	 */
 	@ApiOperation(value = "从新绑定手机")
-	@RequestMapping(value="/v1/re-bind-phone/{user_id}",method=RequestMethod.POST)
+	@RequestMapping(value="/re-bind-phone/{user_id}",method=RequestMethod.POST)
 	@ResponseBody
 	public Result reBindPhone(@RequestBody User user,@PathVariable("user_id") Long userId,@CookieValue String token) throws Exception{
 		user.setId(userId);
@@ -150,7 +158,7 @@ public class ApiAccountController {
 	 * @throws Exception 
 	 */
 	@ApiOperation(value = "检查手机是否已经注册")
-	@RequestMapping(value="/v1/is-phone-exist/{phone}",method=RequestMethod.GET)
+	@RequestMapping(value="/is-phone-exist/{phone}",method=RequestMethod.GET)
 	@ResponseBody
 	public Result isPhoneExist(@PathVariable() String phone) throws Exception{
 		return accountService.isPhoneExist(phone);
@@ -163,7 +171,7 @@ public class ApiAccountController {
 	 * @return
 	 */
 	@ApiOperation(value = "获取手机发送的验证码 (为方面测试用，千万别在客户端调用")
-	@RequestMapping(value="/v1/phone-check-code/{phone}",method=RequestMethod.GET)
+	@RequestMapping(value="/phone-check-code/{phone}",method=RequestMethod.GET)
 	@ResponseBody
 	public Result phoneCheckCode(@PathVariable() String phone){
 		return smsService.getPhoneCheckCode(phone);
@@ -175,7 +183,7 @@ public class ApiAccountController {
 	 * @return
 	 */
 	@ApiOperation(value = "所有用户数量")
-	@RequestMapping(value="/v1/all-user-count",method=RequestMethod.GET)
+	@RequestMapping(value="/all-user-count",method=RequestMethod.GET)
 	@ResponseBody
 	public Result allUserCount(){
 		return Result.ok(accountService.allUserCount());

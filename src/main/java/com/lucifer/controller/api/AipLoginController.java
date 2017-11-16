@@ -1,4 +1,4 @@
-package com.lucifer.controller;
+package com.lucifer.controller.api;
 
 
 import com.lucifer.model.User;
@@ -23,6 +23,8 @@ public class AipLoginController {
 
 	@Resource
 	private UserLoginService userLoginService;
+
+
 	
 
 	

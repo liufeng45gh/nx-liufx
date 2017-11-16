@@ -1,11 +1,9 @@
 package com.lucifer.service;
 
 
+import com.lucifer.cache.AppCache;
 import com.lucifer.dao.SmsDao;
-import com.lucifer.utils.DateUtils;
-import com.lucifer.utils.Result;
-import com.lucifer.utils.SmsUtil;
-import com.lucifer.utils.StringHelper;
+import com.lucifer.utils.*;
 import org.apache.commons.httpclient.Header;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.methods.InputStreamRequestEntity;
@@ -30,22 +28,35 @@ public class SmsService {
 	@Autowired
 	private StringRedisTemplate stringRedisTemplate;
 	
-	private String key_pre="msgcode:";
+
 	
 	private String codeSendPhonesList = "CODE_SENDING_PHONE_LIST";
+
+	@Autowired
+	private AppCache appCache;
 
 	@Autowired
 	private SmsDao smsDao;
 	
 	private static final Logger logger = LoggerFactory.getLogger(SmsService.class);
 	
-	public Result sendCheckCode(String telephone, String remoteAddr) throws Exception{
+	public Result sendCheckCode(String telephone,String imgCode, String remoteAddr) throws Exception{
+		if (StringHelper.isEmpty(imgCode)) {
+			return Result.fail("图片验证码不能为空");
+		}
+		String _imgCode = appCache.find(Constant.CACHE_KEY_PERSISTENCE_PHONE_IMG+telephone,null);
+		if (StringHelper.isEmpty(_imgCode)) {
+			return Result.fail("图片验证码未发送或已过期");
+		}
+		if (!imgCode.equals(_imgCode)) {
+			return Result.fail("图片验证码错误");
+		}
 		
-		
-		String code = smsDao.getCheckCode(telephone);
+		String code = RandomUtil.getRamdomIntString(4);
+				//smsDao.getCheckCode(telephone);
 		logger.info("code is :"+code);		
-		stringRedisTemplate.opsForValue().set(key_pre+telephone, code);
-		stringRedisTemplate.expire(key_pre+telephone, 20, TimeUnit.MINUTES);
+		stringRedisTemplate.opsForValue().set(Constant.CACHE_KEY_PERSISTENCE_PHONE_CODE+telephone, code);
+		stringRedisTemplate.expire(Constant.CACHE_KEY_PERSISTENCE_PHONE_CODE+telephone, 20, TimeUnit.MINUTES);
 		
 		boolean isRecordIpMoreThan20 = this.isRecordIpMoreThan20(remoteAddr);
 		if (isRecordIpMoreThan20) {
@@ -101,23 +112,23 @@ public class SmsService {
 	public Result checkCode(String telephone,String code) throws Exception{
 		logger.info("telephone is "+telephone);
 		logger.info("code is "+code);
-//		String cached_code = stringRedisTemplate.opsForValue().get(key_pre+telephone);
-//		if  (null == cached_code)  {
-//			return Result.fail("验证码过期");
-//		}
-//		logger.info("cached_code is : "+cached_code);
-//		if (code.equals(cached_code)) {
-//			return Result.ok();
-//		}
-		Boolean isRight = smsDao.checkCode(telephone, code);
-		if (isRight) {
+		String cached_code = stringRedisTemplate.opsForValue().get(Constant.CACHE_KEY_PERSISTENCE_PHONE_CODE+telephone);
+		if  (null == cached_code)  {
+			return Result.fail("验证码过期");
+		}
+		logger.info("cached_code is : "+cached_code);
+		if (code.equals(cached_code)) {
 			return Result.ok();
 		}
+		//Boolean isRight = smsDao.checkCode(telephone, code);
+//		if (isRight) {
+//			return Result.ok();
+//		}
 		return Result.fail("验证码错误");
 	}
 	
 	public Result getPhoneCheckCode(String telephone){
-		String cached_code = stringRedisTemplate.opsForValue().get(key_pre+telephone);
+		String cached_code = stringRedisTemplate.opsForValue().get(Constant.CACHE_KEY_PERSISTENCE_PHONE_CODE+telephone);
 		if  (null == cached_code)  {
 			return Result.fail("验证码过期");
 		}

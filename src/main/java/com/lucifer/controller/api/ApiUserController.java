@@ -1,4 +1,4 @@
-package com.lucifer.controller;
+package com.lucifer.controller.api;
 
 
 import com.lucifer.dao.UserDao;
