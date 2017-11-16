@@ -4,6 +4,7 @@ package com.lucifer.service;
 import com.lucifer.dao.SmsDao;
 import com.lucifer.utils.DateUtils;
 import com.lucifer.utils.Result;
+import com.lucifer.utils.SmsUtil;
 import com.lucifer.utils.StringHelper;
 import org.apache.commons.httpclient.Header;
 import org.apache.commons.httpclient.HttpClient;
@@ -60,9 +61,10 @@ public class SmsService {
 		this.recordSendPhone(telephone);
 		
 		
-		stringRedisTemplate.opsForList().leftPush(codeSendPhonesList, telephone);
+		//stringRedisTemplate.opsForList().leftPush(codeSendPhonesList, telephone);
 		//log.info("redisTemplate.opsForValue().set(key_pre+telephone, code,60000);");
 		//this.sendToRomotApi(telephone, code);
+		SmsUtil.sendSMS("telephone","【暖行】您的验证码是："+code + "，一分钟内有效。",null);
 		return Result.ok();
 	}
 	

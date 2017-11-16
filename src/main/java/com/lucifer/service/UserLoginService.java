@@ -69,7 +69,8 @@ public class UserLoginService {
 		if  (null == dbUser)  {
 			return Result.fail("用户未找到");
 		}
-		String md5Password = Md5Utils.md5(Md5Utils.md5(user.getPassword())+dbUser.getSalt());
+		String md5Password = PasswordUtil.encrypt(user.getPhone(), user.getPassword(), PasswordUtil.getStaticSalt());
+				//Md5Utils.md5(Md5Utils.md5(user.getPassword())+dbUser.getSalt());
 		if (!md5Password.equals(dbUser.getPassword())) {
 			return Result.fail("密码错误");
 		}

@@ -46,7 +46,8 @@ public class AccountService {
 		user.setPhone(user.getPhone());
 		String salt = RandomUtil.getNextSalt();
 		user.setSalt(salt);
-		String encrypt_password = Md5Utils.md5(Md5Utils.md5(user.getPassword())+salt);
+		String encrypt_password = PasswordUtil.encrypt(user.getPhone(), user.getPassword(), PasswordUtil.getStaticSalt());
+				//Md5Utils.md5(Md5Utils.md5(user.getPassword())+salt);
 		user.setPassword(encrypt_password);
 		UUID uuid = UUID.randomUUID();
 		user.setUuid(uuid.toString());
