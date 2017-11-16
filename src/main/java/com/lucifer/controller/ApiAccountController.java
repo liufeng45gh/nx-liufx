@@ -19,7 +19,7 @@ import javax.servlet.http.HttpServletRequest;
  * @author liufengxuan
  *
  */
-//@Controller
+@Controller
 public class ApiAccountController {
 	
 	@Resource

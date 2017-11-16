@@ -18,7 +18,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-//@Controller
+@Controller
 public class ApiUserController {
 	
 	@Resource
