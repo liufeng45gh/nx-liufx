@@ -16,9 +16,9 @@ import javax.annotation.Resource;
  *
  */
 
-@Api(basePath = "/v1", value = "登录", description = "登录controller", produces = "application/json")
+@Api(basePath = "/api/account", value = "登录", description = "登录controller", produces = "application/json")
 @RestController
-@RequestMapping(value = "/v1")
+@RequestMapping(value = "/api/account")
 public class AipLoginController {
 
 	@Resource

@@ -68,9 +68,11 @@ public class User implements Serializable{
 	
 	// app_tag   在不同的App上的激活标签
 	private String roleId;
-	
+
 	//验证码
-	private String code;
+	private String imgCode;
+	//验证码
+	private String telCode;
 
 	private String status;
 	
@@ -228,12 +230,21 @@ public class User implements Serializable{
 		this.rePassword = rePassword;
 	}
 
-	public String getCode() {
-		return code;
+
+	public String getImgCode() {
+		return imgCode;
 	}
 
-	public void setCode(String code) {
-		this.code = code;
+	public void setImgCode(String imgCode) {
+		this.imgCode = imgCode;
+	}
+
+	public String getTelCode() {
+		return telCode;
+	}
+
+	public void setTelCode(String telCode) {
+		this.telCode = telCode;
 	}
 
 	public String getAccessToken() {

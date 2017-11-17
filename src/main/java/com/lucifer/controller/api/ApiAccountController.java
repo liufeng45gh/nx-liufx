@@ -1,17 +1,16 @@
 package com.lucifer.controller.api;
 
 
-import com.lucifer.cache.AppCache;
+
 import com.lucifer.model.User;
 import com.lucifer.service.AccountService;
 import com.lucifer.service.SmsService;
-import com.lucifer.utils.Constant;
+
 import com.lucifer.utils.Result;
-import com.lucifer.utils.StringHelper;
+
 import com.wordnik.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -43,14 +42,14 @@ public class ApiAccountController {
 	 * @return {ok:true}
 	 * @throws Exception
 	 */
-	@ApiOperation(value = "发送短信验证码")
+	@ApiOperation(value = "发送短信验证码,需要传入 phone|imgCode")
 	@RequestMapping(value="/phone-sms",method=RequestMethod.POST)
 	@ResponseBody
-	public Result sendCheckMessage(@RequestBody String phone, @RequestBody String imgCode,HttpServletRequest request) throws Exception{
+	public Result sendCheckMessage(@RequestBody User user,HttpServletRequest request) throws Exception{
 		logger.info("sendCheckMessage has been called");
-		logger.info("phone is : "+phone);
+		logger.info("phone is : "+user.getPhone());
 
-		Result result = smsService.sendCheckCode(phone,imgCode,this.getIpAddr(request));
+		Result result = smsService.sendCheckCode(user.getPhone(),user.getImgCode(),this.getIpAddr(request));
 		return result;
 	}
 	
@@ -61,11 +60,11 @@ public class ApiAccountController {
 	 * @return {ok:true}
 	 * @throws Exception
 	 */
-	@ApiOperation(value = "比较验证码")
+	@ApiOperation(value = "比较验证码,需要传入 phone|telCode")
 	@RequestMapping(value="/phone-checks",method=RequestMethod.POST)
 	@ResponseBody
-	public Result checkCode(@RequestBody String phone,@RequestBody String telCode) throws Exception{
-		return smsService.checkCode(phone, telCode);
+	public Result checkCode(@RequestBody User user) throws Exception{
+		return smsService.checkCode(user.getPhone(), user.getTelCode());
 	}
 	
 	
