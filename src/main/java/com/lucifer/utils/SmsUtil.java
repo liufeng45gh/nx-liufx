@@ -15,7 +15,7 @@ public abstract class SmsUtil {
     public SmsUtil() {
     }
 
-    public static void sendSMS(String mobile, String content, String name) {
+    public static void sendSMS(String mobile, String content) {
         System.setProperty("sun.net.client.defaultConnectTimeout", "30000");
         System.setProperty("sun.net.client.defaultReadTimeout", "30000");
         StringBuffer buffer = new StringBuffer();
@@ -44,6 +44,6 @@ public abstract class SmsUtil {
     public static void main(String[] args) {
         Integer mobileCode = Integer.valueOf((int)((Math.random() * 9.0D + 1.0D) * 1000.0D));
         String content = new String("【暖行】您的验证码是：" + mobileCode + "，一分钟内有效。");
-        sendSMS("+8613681181338", content, (String)null);
+        sendSMS("+8613681181338", content);
     }
 }

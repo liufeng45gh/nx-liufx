@@ -75,7 +75,7 @@ public class SmsService {
 		//stringRedisTemplate.opsForList().leftPush(codeSendPhonesList, telephone);
 		//log.info("redisTemplate.opsForValue().set(key_pre+telephone, code,60000);");
 		//this.sendToRomotApi(telephone, code);
-		SmsUtil.sendSMS("telephone","【暖行】您的验证码是："+code + "，一分钟内有效。",null);
+		SmsUtil.sendSMS(telephone,"【暖行】您的验证码是："+code + "，一分钟内有效。");
 		return Result.ok();
 	}
 	
