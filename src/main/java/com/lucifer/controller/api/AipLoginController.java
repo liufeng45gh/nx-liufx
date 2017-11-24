@@ -6,6 +6,7 @@ import com.lucifer.service.UserLoginService;
 import com.lucifer.utils.Result;
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
+import com.wordnik.swagger.annotations.ApiParam;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -40,7 +41,11 @@ public class AipLoginController {
 	@ApiOperation(value = "用户登录",  notes = "user login")
 	@RequestMapping(value="/logins",method=RequestMethod.POST)
 	@ResponseBody
-	public Result login(@RequestBody User user) throws Exception{
+
+	public Result login(
+			@ApiParam(name = "request-body",value = "只需要传入 phone 和 password 字段,like this: " +
+					"{phone:\"18610814074\",password:\"xxxxxxx\"}")
+			@RequestBody User user) throws Exception{
 		Result result = userLoginService.login(user);
 		return result;
 	}

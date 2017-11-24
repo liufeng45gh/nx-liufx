@@ -9,6 +9,7 @@ import com.lucifer.service.SmsService;
 import com.lucifer.utils.Result;
 
 import com.wordnik.swagger.annotations.ApiOperation;
+import com.wordnik.swagger.annotations.ApiParam;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -63,7 +64,10 @@ public class ApiAccountController {
 	@ApiOperation(value = "比较验证码,需要传入 phone|telCode")
 	@RequestMapping(value="/phone-checks",method=RequestMethod.POST)
 	@ResponseBody
-	public Result checkCode(@RequestBody User user) throws Exception{
+	public Result checkCode(
+			@ApiParam(name = "request-body",value = "只需要传入 phone 和 telCode 字段,like this: " +
+					"{phone:\"18610814074\",telCode:\"xxxxxxx\"}")
+			@RequestBody User user) throws Exception{
 		return smsService.checkCode(user.getPhone(), user.getTelCode());
 	}
 	
@@ -77,7 +81,10 @@ public class ApiAccountController {
 	@ApiOperation(value = "注册")
 	@RequestMapping(value="/v1/registers",method=RequestMethod.POST)
 	@ResponseBody
-	public Result register(@RequestBody User user) throws Exception{		
+	public Result register(
+			@ApiParam(name = "request-body",value = "只需要传入 phone|telCode|password|rePassword 字段,like this: " +
+					"{phone:\"18610814074\",telCode:\"xxxxxxx\"}")
+			@RequestBody User user) throws Exception{
 		Result result = accountService.register(user);		
 		return result;
 	}
