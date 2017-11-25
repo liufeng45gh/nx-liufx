@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.lucier.model">
+    <resultMap type="com.lucifer.model.hfc.TradeLog" id="TradeLogMap">
+        <id column="id" property="id"/>
+        <result column="title" property="title"/>
+        <result column="description" property="description"/>
+        <result column="category" property="category"/>
+        <result column="price" property="price"/>
+        <result column="fee_type" property="feeType"/>
+        <result column="reference" property="reference"/>
+        <result column="status" property="status"/>
+        <result column="created_at" property="createdAt"/>
+        <result column="updated_at" property="updatedAt"/>
+
+    </resultMap>
+
+    <insert id="insertTradeLog">
+        insert into trade_log
+        (title,description,category,price,fee_type,reference,status,created_at,updated_at)
+        values
+        (#{title},#{description},#{category},#{price},#{feeType},#{reference},#{status},#{createdAt},#{updatedAt})
+    </insert>
+
+</mapper>
