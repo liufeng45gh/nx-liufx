@@ -69,4 +69,10 @@
         set is_deleted = 1
         where id = #{id}
     </delete>
+    <insert id="insertQuestionUserPay" >
+        insert into question_user_pay (question_id,user_id) values (#{questionId},#{userId})
+    </insert>
+    <select id="isQuestionUserPay" resultType="java.lang.Integer">
+        select count(*) from question_user_pay where  question_id = #{questionId} and  user_id = #{userId}
+    </select>
 </mapper>

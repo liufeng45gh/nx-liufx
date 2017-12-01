@@ -19,6 +19,8 @@ public class Question {
 
     private Float top;
 
+    private Integer isPay;
+
     public Long getId() {
         return id;
     }
@@ -65,5 +67,13 @@ public class Question {
 
     public void setTop(Float top) {
         this.top = top;
+    }
+
+    public Integer getIsPay() {
+        return isPay;
+    }
+
+    public void setIsPay(Integer isPay) {
+        this.isPay = isPay;
     }
 }

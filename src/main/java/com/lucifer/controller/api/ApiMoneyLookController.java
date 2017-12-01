@@ -1,15 +1,18 @@
 package com.lucifer.controller.api;
 
+import com.lucifer.dao.hfc.MemberDao;
 import com.lucifer.dao.hfc.MoneyLookDao;
 import com.lucifer.model.hfc.Answer;
 import com.lucifer.model.hfc.Question;
-import com.lucifer.utils.Constant;
+import com.lucifer.model.hfc.QuestionPay;
+import com.lucifer.service.hfc.MoneyLookService;
+import com.lucifer.service.hfc.TradeService;
+import com.lucifer.utils.*;
 
-
-import com.lucifer.utils.PageInfoWriter;
-import com.lucifer.utils.Result;
 
 import com.wordnik.swagger.annotations.ApiOperation;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -25,17 +28,29 @@ import java.util.Map;
 @RequestMapping("/api/money-look")
 public class ApiMoneyLookController {
 
+    final Logger logger = LoggerFactory.getLogger(this.getClass());
+
     @Resource
     private MoneyLookDao moneyLookDao;
+
+    @Resource
+    private MoneyLookService moneyLookService;
+
+    @Resource
+    private MemberDao memberDao;
+
+    @Resource
+    private TradeService tradeService;
 
     @ApiOperation(value = "获得所有问题", notes = "获得所有问题")
     @RequestMapping(value="/question-list",method = RequestMethod.GET)
     public Result questionList(HttpServletRequest request,
-                               @RequestParam(value = "page",required=false,defaultValue="1")Integer page){
+                               @RequestParam(value = "page",required=false,defaultValue="1")Integer page,
+                               @RequestHeader(required = false) String token){
         Map resultMap = new HashMap();
         Integer pageSize = Constant.PAGESIZE;
         Integer offset = (page-1) * pageSize;
-        List<Question> questionList = moneyLookDao.questionList(offset,pageSize);
+        List<Question> questionList = moneyLookService.questionList(offset,pageSize,token);
         request.setAttribute("questionList",questionList);
         Integer matchRecordCount=moneyLookDao.matchRecordCount();
         PageInfoWriter pageInfoWriter = PageInfoWriter.create(page,pageSize,matchRecordCount);
@@ -62,4 +77,29 @@ public class ApiMoneyLookController {
         //request.setAttribute("answerList",answerList);
         return Result.ok(answerList);
     }
+
+
+    @ApiOperation(value = "一元钱看统一下单", notes = "一元钱看统一下单")
+    @RequestMapping(value="/question/{id}/make-order",method = RequestMethod.POST)
+    public Result makeOrder(@RequestHeader String token,@PathVariable Long id,HttpServletRequest request) throws Exception {
+        Long userId = memberDao.getMemberIdByToken(token);
+        if (null == userId) {
+            return null;
+        }
+
+        String ip = IpUtils.getIpAddr(request);
+        String notifyUrl =  "/question/"+id +"/make-buy/" + userId;
+        return tradeService.wxMakeOrder("money-look","一元钱看","付费", RandomUtil.getRandomString(9),1,ip,notifyUrl);
+    }
+
+    @ApiOperation(value = "一元钱看付费成功", notes = "一元钱看付费成功")
+    @RequestMapping(value="/question/{id}/make-buy/{userId}",method = RequestMethod.POST)
+    public Result makeBuy(@PathVariable Long id,@PathVariable Long userId) throws Exception {
+        QuestionPay questionPay = new QuestionPay();
+        questionPay.setQuestionId(id);
+        questionPay.setUserId(userId);
+        return Result.ok();
+    }
+
+
 }

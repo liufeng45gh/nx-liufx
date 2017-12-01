@@ -81,6 +81,11 @@ public class HttpsUtil {
 		}
 		return null;
 	}
+
+	public static String sPost(String url, String content, String charset) throws NoSuchAlgorithmException, KeyManagementException, IOException {
+		byte[] result = post(url,content,charset);
+		return new String(result,charset);
+	}
 	
 	/**
 	 * get方式请求服务器(https协议)

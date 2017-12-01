@@ -4,6 +4,7 @@ import com.lucifer.dao.IBatisBaseDao;
 import com.lucifer.model.hfc.Answer;
 import com.lucifer.model.hfc.Atlas;
 import com.lucifer.model.hfc.Question;
+import com.lucifer.model.hfc.QuestionPay;
 import com.lucifer.utils.DateUtils;
 import org.springframework.stereotype.Component;
 
@@ -62,6 +63,20 @@ public class MoneyLookDao extends IBatisBaseDao {
 
     public Integer deleteAnswer(Long id){
         return this.hfcSqlSession.delete("deleteAnswer",id);
+    }
+
+    public Integer insertPay(QuestionPay questionPay){
+        return this.hfcSqlSession.insert("insertQuestionUserPay",questionPay);
+    }
+
+    public Integer isPay(Long questionId,Long userId){
+        
+        QuestionPay questionPay = new  QuestionPay();
+        questionPay.setQuestionId(questionId);
+        questionPay.setUserId(userId);
+        
+        Integer isPay = hfcSqlSession.selectOne("isQuestionUserPay",questionPay);
+        return isPay;
     }
 
 

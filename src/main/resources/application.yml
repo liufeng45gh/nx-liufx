@@ -60,6 +60,13 @@ sms:
   appKey: 80f0cbe03428deb5f520005694aeffdd
   appSecret: ef2c21102cb8
   verifyCodeUrl: https://api.netease.im/sms/verifycode.action
+wx:
+  appid: wx93f526ae469ba2f0
+  mchId: 1455164902
+  apiKey: NUANXingapiKey6352ERyusiJanDaoNo
+  serviceDom: http://47.92.129.220:8082
+  unifiedorderUrl: https://api.mch.weixin.qq.com/pay/unifiedorder
+  
 
 
 
